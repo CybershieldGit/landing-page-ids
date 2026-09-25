@@ -76,12 +76,13 @@ function bindLeadForm(formEl, msgBoxEl) {
       }
       formEl.reset();
 
-      // Open WhatsApp for immediate engagement
+      // Open WhatsApp for immediate engagement & redirect to Thank You page
       const msg = `Hi iDigitalStudies, I requested free counselling.%0A%0AName: ${encodeURIComponent(payload.name)}%0AMobile: ${encodeURIComponent(payload.phone)}%0AEmail: ${encodeURIComponent(payload.email || "Not provided")}%0ACourse: ${encodeURIComponent(payload.course)}%0AMode: ${encodeURIComponent(payload.mode)}`;
       const wa = "https://wa.me/919315471293?text=" + msg;
+      window.open(wa, "_blank", "noopener");
       setTimeout(() => {
-        window.open(wa, "_blank", "noopener");
-      }, 1000);
+        window.location.href = "thank-you/";
+      }, 600);
     } catch (err) {
       console.error("Submission error:", err);
       // Graceful fallback to WhatsApp so the lead is never lost
@@ -94,6 +95,9 @@ function bindLeadForm(formEl, msgBoxEl) {
       const msg = `Hi iDigitalStudies, I want free counselling.%0A%0AName: ${encodeURIComponent(payload.name)}%0AMobile: ${encodeURIComponent(payload.phone)}%0AEmail: ${encodeURIComponent(payload.email || "Not provided")}%0ACourse: ${encodeURIComponent(payload.course)}%0AMode: ${encodeURIComponent(payload.mode)}`;
       const wa = "https://wa.me/919315471293?text=" + msg;
       window.open(wa, "_blank", "noopener");
+      setTimeout(() => {
+        window.location.href = "thank-you/";
+      }, 600);
     } finally {
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalBtnText;
