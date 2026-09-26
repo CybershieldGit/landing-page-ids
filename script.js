@@ -79,6 +79,11 @@ function bindLeadForm(formEl, msgBoxEl) {
       }
       formEl.reset();
 
+      // Fire Meta Pixel Lead Event
+      if (typeof fbq === "function") {
+        fbq("track", "Lead");
+      }
+
       // Redirect directly to Thank You page
       setTimeout(() => {
         window.location.href = "thank-you/";
@@ -118,10 +123,109 @@ document.querySelectorAll(".input-wrap select").forEach((sel) => {
   });
 });
 
-// Smooth Scroll for Anchor Links
+// Mobile Lead Form Bottom Sheet Modal Logic
+const leadModalWrap = document.getElementById("leadModalWrap");
+const closeFormModalBtn = document.getElementById("closeFormModal");
+
+function isMobileView() {
+  return window.innerWidth <= 800;
+}
+
+function openLeadModal() {
+  if (!leadModalWrap) return;
+  leadModalWrap.classList.add("is-open");
+  document.body.classList.add("modal-open");
+  const firstInput = leadModalWrap.querySelector("input[name='name']");
+  if (firstInput) {
+    setTimeout(() => {
+      try { firstInput.focus(); } catch (e) {}
+    }, 280);
+  }
+}
+
+function closeLeadModal() {
+  if (!leadModalWrap) return;
+  leadModalWrap.classList.remove("is-open");
+  document.body.classList.remove("modal-open");
+}
+
+if (closeFormModalBtn) {
+  closeFormModalBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    closeLeadModal();
+  });
+}
+
+if (leadModalWrap) {
+  leadModalWrap.addEventListener("click", (e) => {
+    if (e.target === leadModalWrap) {
+      closeLeadModal();
+    }
+  });
+}
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && leadModalWrap && leadModalWrap.classList.contains("is-open")) {
+    closeLeadModal();
+  }
+});
+
+// Touch swipe-down to dismiss modal sheet
+const formCard = document.querySelector("#leadModalWrap .hero-form-card");
+if (formCard) {
+  let touchStartY = 0;
+  let touchCurrentY = 0;
+
+  formCard.addEventListener("touchstart", (e) => {
+    if (formCard.scrollTop <= 5) {
+      touchStartY = e.touches[0].clientY;
+    } else {
+      touchStartY = 0;
+    }
+  }, { passive: true });
+
+  formCard.addEventListener("touchmove", (e) => {
+    if (!touchStartY) return;
+    touchCurrentY = e.touches[0].clientY;
+    const diff = touchCurrentY - touchStartY;
+    if (diff > 0) {
+      formCard.style.transform = `translateY(${diff}px)`;
+    }
+  }, { passive: true });
+
+  formCard.addEventListener("touchend", () => {
+    if (!touchStartY) return;
+    const diff = touchCurrentY - touchStartY;
+    formCard.style.transform = "";
+    if (diff > 90) {
+      closeLeadModal();
+    }
+    touchStartY = 0;
+    touchCurrentY = 0;
+  });
+}
+
+// Close modal if resizing above mobile breakpoint
+window.addEventListener("resize", () => {
+  if (!isMobileView() && leadModalWrap && leadModalWrap.classList.contains("is-open")) {
+    closeLeadModal();
+  }
+});
+
+// Check on load if #contact is hashed in mobile view
+if (window.location.hash === "#contact" && isMobileView()) {
+  setTimeout(openLeadModal, 300);
+}
+
+// Smooth Scroll for Anchor Links (Intercepts #contact on mobile to open modal)
 document.querySelectorAll('a[href^="#"]').forEach((a) => {
   a.addEventListener("click", (e) => {
     const id = a.getAttribute("href");
+    if (id === "#contact" && isMobileView()) {
+      e.preventDefault();
+      openLeadModal();
+      return;
+    }
     if (id.length > 1) {
       const target = document.querySelector(id);
       if (target) {
@@ -195,3 +299,282 @@ window.addEventListener("scroll", () => {
     header.style.boxShadow = "0 2px 8px rgba(0,0,0,0.04)";
   }
 });
+
+// ============================================
+// Hear From IDS Alumni — Infinite Video Carousel
+// ============================================
+const alumniTrack = document.getElementById("alumniCarouselTrack");
+const alumniPrevBtn = document.getElementById("alumniPrevBtn");
+const alumniNextBtn = document.getElementById("alumniNextBtn");
+const alumniDotsContainer = document.getElementById("alumniCarouselDots");
+
+if (alumniTrack) {
+  const originalCards = Array.from(alumniTrack.querySelectorAll(".alumni-video-card"));
+  const originalCount = originalCards.length;
+
+  if (originalCount > 0) {
+    // Clone cards for seamless infinite wrapping:
+    // [Set A: clones] [Set B: originals] [Set C: clones]
+    const clonesBefore = originalCards.map((card) => {
+      const clone = card.cloneNode(true);
+      clone.classList.add("is-clone");
+      return clone;
+    });
+
+    const clonesAfter = originalCards.map((card) => {
+      const clone = card.cloneNode(true);
+      clone.classList.add("is-clone");
+      return clone;
+    });
+
+    clonesBefore.reverse().forEach((clone) => {
+      alumniTrack.insertBefore(clone, alumniTrack.firstChild);
+    });
+
+    clonesAfter.forEach((clone) => {
+      alumniTrack.appendChild(clone);
+    });
+
+    const allCards = Array.from(alumniTrack.querySelectorAll(".alumni-video-card"));
+
+    let autoPlayTimer = null;
+    let isHovered = false;
+    let isVideoPlaying = false;
+    let isProgrammaticScrolling = false;
+
+    function getStep() {
+      const firstCard = allCards[0];
+      if (!firstCard) return 250;
+      const style = window.getComputedStyle(alumniTrack);
+      const gap = parseFloat(style.gap) || 20;
+      return firstCard.offsetWidth + gap;
+    }
+
+    function getSingleSetWidth() {
+      return getStep() * originalCount;
+    }
+
+    // Position carousel at the start of Set B (original cards)
+    function initPosition() {
+      const singleSetWidth = getSingleSetWidth();
+      alumniTrack.style.scrollBehavior = "auto";
+      alumniTrack.scrollLeft = singleSetWidth;
+    }
+
+    // Initialize position on DOM load and after resize
+    initPosition();
+    window.addEventListener("resize", () => {
+      initPosition();
+      updateActiveDot();
+    });
+
+    // Check bounds and seamlessly wrap around without any visible jump
+    function checkWrapBounds() {
+      const singleSetWidth = getSingleSetWidth();
+      if (!singleSetWidth) return;
+
+      // Reached into Set C (right side): silently wrap back to Set B
+      if (alumniTrack.scrollLeft >= singleSetWidth * 2 - 5) {
+        alumniTrack.style.scrollBehavior = "auto";
+        alumniTrack.scrollLeft -= singleSetWidth;
+      }
+      // Reached into Set A (left side): silently wrap forward to Set B
+      else if (alumniTrack.scrollLeft <= singleSetWidth * 0.5) {
+        alumniTrack.style.scrollBehavior = "auto";
+        alumniTrack.scrollLeft += singleSetWidth;
+      }
+    }
+
+    function scrollToNext() {
+      if (isProgrammaticScrolling) return;
+      isProgrammaticScrolling = true;
+      const step = getStep();
+
+      alumniTrack.style.scrollBehavior = "smooth";
+      alumniTrack.scrollBy({ left: step, behavior: "smooth" });
+
+      setTimeout(() => {
+        checkWrapBounds();
+        isProgrammaticScrolling = false;
+        updateActiveDot();
+      }, 420);
+    }
+
+    function scrollToPrev() {
+      if (isProgrammaticScrolling) return;
+      isProgrammaticScrolling = true;
+      const step = getStep();
+
+      alumniTrack.style.scrollBehavior = "smooth";
+      alumniTrack.scrollBy({ left: -step, behavior: "smooth" });
+
+      setTimeout(() => {
+        checkWrapBounds();
+        isProgrammaticScrolling = false;
+        updateActiveDot();
+      }, 420);
+    }
+
+    function startAutoPlay() {
+      stopAutoPlay();
+      autoPlayTimer = setInterval(() => {
+        if (!isHovered && !isVideoPlaying) {
+          scrollToNext();
+        }
+      }, 3000);
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayTimer) {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+      }
+    }
+
+    function resetAutoPlay() {
+      stopAutoPlay();
+      startAutoPlay();
+    }
+
+    // Button click events
+    if (alumniPrevBtn) {
+      alumniPrevBtn.addEventListener("click", () => {
+        scrollToPrev();
+        resetAutoPlay();
+      });
+    }
+
+    if (alumniNextBtn) {
+      alumniNextBtn.addEventListener("click", () => {
+        scrollToNext();
+        resetAutoPlay();
+      });
+    }
+
+    // Setup 6 dots representing the 6 unique alumni cards
+    if (alumniDotsContainer) {
+      alumniDotsContainer.innerHTML = "";
+      originalCards.forEach((_, idx) => {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = `carousel-dot ${idx === 0 ? "active" : ""}`;
+        dot.setAttribute("aria-label", `Slide ${idx + 1}`);
+        dot.addEventListener("click", () => {
+          const step = getStep();
+          const singleSetWidth = getSingleSetWidth();
+          alumniTrack.style.scrollBehavior = "smooth";
+          alumniTrack.scrollTo({ left: singleSetWidth + idx * step, behavior: "smooth" });
+          resetAutoPlay();
+        });
+        alumniDotsContainer.appendChild(dot);
+      });
+    }
+
+    function updateActiveDot() {
+      if (!alumniDotsContainer) return;
+      const step = getStep();
+      const singleSetWidth = getSingleSetWidth();
+      if (!step || !singleSetWidth) return;
+
+      const normalized = ((alumniTrack.scrollLeft % singleSetWidth) + singleSetWidth) % singleSetWidth;
+      const activeIdx = Math.min(
+        Math.round(normalized / step) % originalCount,
+        originalCount - 1
+      );
+      const dots = alumniDotsContainer.querySelectorAll(".carousel-dot");
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle("active", idx === activeIdx);
+      });
+    }
+
+    // Track scroll listener (for manual swipe/drag)
+    alumniTrack.addEventListener("scroll", () => {
+      if (!isProgrammaticScrolling) {
+        checkWrapBounds();
+      }
+      updateActiveDot();
+    }, { passive: true });
+
+    // Hover & Touch pause
+    alumniTrack.addEventListener("mouseenter", () => { isHovered = true; });
+    alumniTrack.addEventListener("mouseleave", () => { isHovered = false; });
+    alumniTrack.addEventListener("touchstart", () => { isHovered = true; }, { passive: true });
+    alumniTrack.addEventListener("touchend", () => {
+      setTimeout(() => { isHovered = false; }, 2000);
+    }, { passive: true });
+
+    // Video playback management across ALL cards (including clones)
+    allCards.forEach((card) => {
+      const video = card.querySelector("video");
+      const playTrigger = card.querySelector(".play-trigger");
+
+      if (!video) return;
+
+      function togglePlay(e) {
+        if (e) e.stopPropagation();
+
+        if (video.paused) {
+          // Pause all other videos
+          allCards.forEach((otherCard) => {
+            const otherVideo = otherCard.querySelector("video");
+            if (otherVideo && otherVideo !== video && !otherVideo.paused) {
+              otherVideo.pause();
+              otherCard.classList.remove("is-playing");
+              otherVideo.controls = false;
+            }
+          });
+
+          video.play().then(() => {
+            card.classList.add("is-playing");
+            video.controls = true;
+            isVideoPlaying = true;
+            stopAutoPlay();
+          }).catch((err) => {
+            console.warn("Video playback error:", err);
+          });
+        } else {
+          video.pause();
+          card.classList.remove("is-playing");
+          video.controls = false;
+          isVideoPlaying = false;
+          startAutoPlay();
+        }
+      }
+
+      if (playTrigger) {
+        playTrigger.addEventListener("click", togglePlay);
+      }
+
+      card.addEventListener("click", (e) => {
+        if (e.target.tagName.toLowerCase() === "video" && video.controls) return;
+        togglePlay(e);
+      });
+
+      video.addEventListener("ended", () => {
+        card.classList.remove("is-playing");
+        video.controls = false;
+        video.currentTime = 0;
+        isVideoPlaying = false;
+        startAutoPlay();
+      });
+
+      video.addEventListener("pause", () => {
+        card.classList.remove("is-playing");
+        const anyPlaying = allCards.some(c => !c.querySelector("video").paused);
+        if (!anyPlaying) {
+          isVideoPlaying = false;
+          startAutoPlay();
+        }
+      });
+
+      video.addEventListener("play", () => {
+        card.classList.add("is-playing");
+        isVideoPlaying = true;
+        stopAutoPlay();
+      });
+    });
+
+    // Start seamless infinite auto-carouseling
+    startAutoPlay();
+  }
+}

@@ -45,7 +45,7 @@
   <!-- STYLES -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="style.css?v=3.2">
+  <link rel="stylesheet" href="style.css?v=3.11">
 
   <!-- COMPREHENSIVE STRUCTURED DATA (JSON-LD SCHEMA.ORG) -->
   <script type="application/ld+json">
@@ -60,7 +60,7 @@
         "url": "https://idigitalstudies.com/",
         "sameAs": [
           "https://lp3.idigitalstudies.com/"
-        ],
+        ],    
         "logo": "https://lp3.idigitalstudies.com/assets/IDS_new_logo.svg",
         "image": "https://lp3.idigitalstudies.com/assets/Frame_136.svg",
         "description": "Premier digital marketing training institute in Greater Noida offering practical AI-powered courses, live client projects, and career placement assistance.",
@@ -197,6 +197,24 @@
     ]
   }
   </script>
+
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1486883099250043');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1486883099250043&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
 </head>
 <body>
 
@@ -227,7 +245,7 @@
   <div class="container hero-grid">
     <div class="hero-copy">
       <span class="eyebrow">AI-Powered | Practical | Career Focused</span>
-      <h1>MASTER<br><span class="title-line-2"><span class="text-blue">DIGITAL</span> <em class="text-orange">MARKETING</em></span><br>COURSE</h1>
+      <h1>MASTER IN <span class="text-blue">AI</span><br><span class="title-line-2"><span class="text-blue">DIGITAL</span> <em class="text-orange">MARKETING</em></span><br>COURSE</h1>
       <p class="hero-lead">Turn Your Passion Into a <b>High-Growth Career</b></p>
       <p class="hero-text">Learn SEO, Google Ads, Meta Ads, Social Media, Content Marketing, Analytics, AI Tools and more with Practical Training, Live Projects &amp; Career Support.</p>
 
@@ -272,9 +290,11 @@
       </div>
     </div>
 
-    <div class="hero-form-wrap">
+    <div class="hero-form-wrap" id="leadModalWrap" role="dialog" aria-modal="true" aria-labelledby="modalFormTitle">
       <div class="hero-form-card" id="contact">
-        <h2>Get Free Counselling</h2>
+        <div class="sheet-drag-handle" aria-hidden="true"></div>
+        <button type="button" class="sheet-close-btn" id="closeFormModal" aria-label="Close form">&times;</button>
+        <h2 id="modalFormTitle">Get Free Counselling</h2>
         <p class="form-subtitle">Start Your Digital Marketing Career Today</p>
         <form id="leadForm">
           <label>
@@ -684,17 +704,51 @@
     <!-- Right: Learn From Industry Experts -->
     <div class="experts-banner-card">
       <div class="experts-banner-content">
+        <span class="experts-tag"><i class="fas fa-award"></i> Master Faculty</span>
         <h3>Learn From<br>Industry <span class="text-blue">Experts</span></h3>
-        <p>Guidance from experienced digital marketing professionals.</p>
+        <p>Guidance from experienced digital marketing practitioners &amp; agency leads.</p>
+        <div class="experts-badges-list">
+          <div class="expert-badge-item">
+            <div class="eb-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+            <div class="eb-text">
+              <strong>10+ Years</strong>
+              <span>Industry Experience</span>
+            </div>
+          </div>
+          <div class="expert-badge-item">
+            <div class="eb-icon"><i class="fas fa-users-cog"></i></div>
+            <div class="eb-text">
+              <strong>1-on-1 Mentorship</strong>
+              <span>Live Doubt Clearing</span>
+            </div>
+          </div>
+          <div class="expert-badge-item">
+            <div class="eb-icon"><i class="fas fa-briefcase"></i></div>
+            <div class="eb-text">
+              <strong>Agency Heads</strong>
+              <span>Real Client Campaigns</span>
+            </div>
+          </div>
+          <div class="expert-badge-item">
+            <div class="eb-icon"><i class="fas fa-certificate"></i></div>
+            <div class="eb-text">
+              <strong>Certified Mentors</strong>
+              <span>Google &amp; Meta Accredited</span>
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
+  </div>
+</section>
 
-      <div class="experts-avatar-grid">
-        <div class="expert-avatar"><img src="assets/expert_1.png" alt="Industry Expert Mentor" loading="lazy" decoding="async"></div>
-        <div class="expert-avatar"><img src="assets/expert_2.png" alt="Industry Expert Mentor" loading="lazy" decoding="async"></div>
-        <div class="expert-avatar"><img src="assets/expert_3.png" alt="Industry Expert Mentor" loading="lazy" decoding="async"></div>
-        <div class="expert-avatar"><img src="assets/expert_4.png" alt="Industry Expert Mentor" loading="lazy" decoding="async"></div>
-        <div class="expert-avatar"><img src="assets/expert_5.png" alt="Industry Expert Mentor" loading="lazy" decoding="async"></div>
-        <div class="expert-avatar"><img src="assets/expert_6.png" alt="Industry Expert Mentor" loading="lazy" decoding="async"></div>
+<!-- CERTIFICATION PARTNER SECTION -->
+<section class="partners-section" id="certifications">
+  <div class="container">
+    <div class="partners-box">
+      <h2 class="partners-title">Certification Partner</h2>
+      <div class="partners-image-wrap">
+        <img src="assets/partners.png?v=2" alt="iDigitalStudies Certification Partners - AI, UGC, Adobe, Meta, HubSpot, Google, and 100+ More Partners" class="partners-img" loading="lazy" decoding="async">
       </div>
     </div>
   </div>
@@ -773,6 +827,155 @@
         <div class="work-logo-pill"><img src="assets/company_titan.png" alt="Titan" loading="lazy" decoding="async"></div>
         <div class="work-logo-pill"><img src="assets/company_more.svg" alt="and more hiring partners" loading="lazy" decoding="async"></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- HEAR FROM IDS ALUMNI VIDEO CAROUSEL SECTION -->
+<section class="alumni-video-section" id="alumni-reviews">
+  <div class="container">
+    <div class="section-head-row alumni-head-row">
+      <div class="section-head alumni-head">
+        <span class="eyebrow"><i class="fas fa-play-circle"></i> Student Reviews &amp; Stories</span>
+        <h2>Hear From <span class="text-orange">IDS Alumni</span></h2>
+        <p>Real experiences, feedback, and career breakthroughs directly from our graduates.</p>
+      </div>
+      <div class="carousel-nav-arrows">
+        <button type="button" class="carousel-arrow prev" id="alumniPrevBtn" aria-label="Previous video">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button type="button" class="carousel-arrow next" id="alumniNextBtn" aria-label="Next video">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="alumni-carousel-wrapper">
+      <div class="alumni-carousel-track" id="alumniCarouselTrack">
+        
+        <!-- Video Card: Bhumi -->
+        <div class="alumni-video-card">
+          <div class="video-media-wrap">
+            <video preload="none" playsinline poster="assets/videos/thumbnails/bhumi.jpg">
+              <source src="assets/videos/Bhumi.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay">
+              <button type="button" class="play-trigger" aria-label="Play video of Bhumi">
+                <i class="fas fa-play"></i>
+              </button>
+            </div>
+            <div class="video-info-gradient">
+              <div class="alumni-meta">
+                <h3 class="alumni-name">Bhumi</h3>
+                <p class="alumni-course">Digital Marketing Graduate</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Card: Divya -->
+        <div class="alumni-video-card">
+          <div class="video-media-wrap">
+            <video preload="none" playsinline poster="assets/videos/thumbnails/divya.jpg">
+              <source src="assets/videos/Divya.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay">
+              <button type="button" class="play-trigger" aria-label="Play video of Divya">
+                <i class="fas fa-play"></i>
+              </button>
+            </div>
+            <div class="video-info-gradient">
+              <div class="alumni-meta">
+                <h3 class="alumni-name">Divya</h3>
+                <p class="alumni-course">Digital Marketing Graduate</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Card: Gaurav -->
+        <div class="alumni-video-card">
+          <div class="video-media-wrap">
+            <video preload="none" playsinline poster="assets/videos/thumbnails/gaurav.jpg">
+              <source src="assets/videos/Gaurav.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay">
+              <button type="button" class="play-trigger" aria-label="Play video of Gaurav">
+                <i class="fas fa-play"></i>
+              </button>
+            </div>
+            <div class="video-info-gradient">
+              <div class="alumni-meta">
+                <h3 class="alumni-name">Gaurav</h3>
+                <p class="alumni-course">Digital Marketing Graduate</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Card: Isha -->
+        <div class="alumni-video-card">
+          <div class="video-media-wrap">
+            <video preload="none" playsinline poster="assets/videos/thumbnails/isha.jpg">
+              <source src="assets/videos/Isha.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay">
+              <button type="button" class="play-trigger" aria-label="Play video of Isha">
+                <i class="fas fa-play"></i>
+              </button>
+            </div>
+            <div class="video-info-gradient">
+              <div class="alumni-meta">
+                <h3 class="alumni-name">Isha</h3>
+                <p class="alumni-course">Digital Marketing Graduate</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Card: Loveleen -->
+        <div class="alumni-video-card">
+          <div class="video-media-wrap">
+            <video preload="none" playsinline poster="assets/videos/thumbnails/loveleen.jpg">
+              <source src="assets/videos/loveleen.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay">
+              <button type="button" class="play-trigger" aria-label="Play video of Loveleen">
+                <i class="fas fa-play"></i>
+              </button>
+            </div>
+            <div class="video-info-gradient">
+              <div class="alumni-meta">
+                <h3 class="alumni-name">Loveleen</h3>
+                <p class="alumni-course">Digital Marketing Graduate</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Card: Soham -->
+        <div class="alumni-video-card">
+          <div class="video-media-wrap">
+            <video preload="none" playsinline poster="assets/videos/thumbnails/soham.jpg">
+              <source src="assets/videos/soham.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay">
+              <button type="button" class="play-trigger" aria-label="Play video of Soham">
+                <i class="fas fa-play"></i>
+              </button>
+            </div>
+            <div class="video-info-gradient">
+              <div class="alumni-meta">
+                <h3 class="alumni-name">Soham</h3>
+                <p class="alumni-course">Digital Marketing Graduate</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- Carousel Dots Pagination -->
+      <div class="carousel-dots" id="alumniCarouselDots" aria-label="Alumni video slides"></div>
     </div>
   </div>
 </section>
@@ -951,6 +1154,6 @@
   <a href="https://wa.me/919315471293?text=Hi%20iDigitalStudies%2C%20I%20want%20free%20counselling." target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a>
 </div>
 
-<script src="script.js?v=2.2"></script>
+<script src="script.js?v=2.7"></script>
 </body>
 </html>
