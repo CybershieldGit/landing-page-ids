@@ -283,7 +283,7 @@ window.addEventListener("scroll", () => {
       document.querySelectorAll(".main-nav a:not(.nav-cta)").forEach((link) => {
         link.style.color = "";
         if (link.getAttribute("href") === "#" + sectionId) {
-          link.style.color = "#ff5b1a";
+          link.style.color = "#fe4759";
         }
       });
     }
