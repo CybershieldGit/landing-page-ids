@@ -31,7 +31,7 @@ counters.forEach((c) => counterObserver.observe(c));
 
 // Lead Form Submission with Google Sheet Integration
 const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxSBBixRZdXA6rDIWC70jgeZE-a7gI3kQflgDA0fB72S-af2Vvj1nkS1GAbXGfZzOeltQ/exec";
+  "https://script.google.com/macros/s/AKfycbzXMhXBjqb7642-9RsgGRiyPjdc5Ho1Yyqe_uoRGejWIl4-IBPujmVjfaNkD8vWcoKoLQ/exec";
 
 function bindLeadForm(formEl, msgBoxEl) {
   if (!formEl) return;
@@ -48,7 +48,10 @@ function bindLeadForm(formEl, msgBoxEl) {
       email: (data.get("email") || "").trim(),
       course: data.get("course") || "",
       mode: data.get("mode") || "",
+      timeline: data.get("timeline") || "",
     };
+
+    console.log("Submitting lead payload:", payload);
 
     // UI Loading state
     submitBtn.disabled = true;
@@ -71,33 +74,26 @@ function bindLeadForm(formEl, msgBoxEl) {
       // Success feedback
       if (msgBoxEl) {
         msgBoxEl.textContent =
-          "✅ Thank you! We received your request. Opening WhatsApp…";
+          "✅ Thank you! Redirecting to confirmation page…";
         msgBoxEl.className = "form-message form-success";
       }
       formEl.reset();
 
-      // Open WhatsApp for immediate engagement & redirect to Thank You page
-      const msg = `Hi iDigitalStudies, I requested free counselling.%0A%0AName: ${encodeURIComponent(payload.name)}%0AMobile: ${encodeURIComponent(payload.phone)}%0AEmail: ${encodeURIComponent(payload.email || "Not provided")}%0ACourse: ${encodeURIComponent(payload.course)}%0AMode: ${encodeURIComponent(payload.mode)}`;
-      const wa = "https://wa.me/919315471293?text=" + msg;
-      window.open(wa, "_blank", "noopener");
+      // Redirect directly to Thank You page
       setTimeout(() => {
         window.location.href = "thank-you/";
-      }, 600);
+      }, 300);
     } catch (err) {
       console.error("Submission error:", err);
-      // Graceful fallback to WhatsApp so the lead is never lost
       if (msgBoxEl) {
         msgBoxEl.textContent =
-          "✅ Connecting you with our counsellor on WhatsApp…";
+          "✅ Thank you! Redirecting to confirmation page…";
         msgBoxEl.className = "form-message form-success";
       }
-
-      const msg = `Hi iDigitalStudies, I want free counselling.%0A%0AName: ${encodeURIComponent(payload.name)}%0AMobile: ${encodeURIComponent(payload.phone)}%0AEmail: ${encodeURIComponent(payload.email || "Not provided")}%0ACourse: ${encodeURIComponent(payload.course)}%0AMode: ${encodeURIComponent(payload.mode)}`;
-      const wa = "https://wa.me/919315471293?text=" + msg;
-      window.open(wa, "_blank", "noopener");
+      formEl.reset();
       setTimeout(() => {
         window.location.href = "thank-you/";
-      }, 600);
+      }, 300);
     } finally {
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalBtnText;
@@ -114,6 +110,13 @@ bindLeadForm(
   document.getElementById("bottomLeadForm"),
   document.getElementById("bottomFormMessage"),
 );
+
+// Active color for select dropdowns when chosen
+document.querySelectorAll(".input-wrap select").forEach((sel) => {
+  sel.addEventListener("change", () => {
+    sel.style.color = sel.value ? "#1a1f36" : "#9ca3be";
+  });
+});
 
 // Smooth Scroll for Anchor Links
 document.querySelectorAll('a[href^="#"]').forEach((a) => {
